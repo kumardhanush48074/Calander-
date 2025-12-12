@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Calendar</title>
+
+<style>
+    body {
+        background: #eef1f5;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+    }
+
+    .calendar {
+        width: 350px;
+        background: #fff;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .calendar header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .calendar header h2 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .calendar button {
+        padding: 5px 12px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+    }
+
+    th {
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 5px;
+    }
+
+    td {
+        padding: 12px;
+        border-radius: 5px;
+    }
+
+    td:hover {
+        background: #d2e3ff;
+        cursor: pointer;
+    }
+
+    .today {
+        background: #4caf50 !important;
+        color: white;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="calendar">
+    <header>
+        <button onclick="prevMonth()">◀</button>
+        <h2 id="month-year"></h2>
+        <button onclick="nextMonth()">▶</button>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sun</th>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+            </tr>
+        </thead>
+
+        <tbody id="calendar-body"></tbody>
+    </table>
+</div>
+
+<script>
+let currentDate = new Date();
+
+function renderCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    document.getElementById("month-year").innerText =
+        currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    let table = "";
+    let date = 1;
+
+    for (let row = 0; row < 6; row++) {
+        let rowHtml = "<tr>";
+
+        for (let col = 0; col < 7; col++) {
+            if (row === 0 && col < firstDay) {
+                rowHtml += "<td></td>";
+            } else if (date > lastDate) {
+                rowHtml += "<td></td>";
+            } else {
+                let isToday = 
+                    date === new Date().getDate() &&
+                    month === new Date().getMonth() &&
+                    year === new Date().getFullYear();
+
+                rowHtml += `<td class="${isToday ? 'today' : ''}">${date}</td>`;
+                date++;
+            }
+        }
+
+        rowHtml += "</tr>";
+        table += rowHtml;
+    }
+
+    document.getElementById("calendar-body").innerHTML = table;
+}
+
+function prevMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+}
+
+function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+}
+
+renderCalendar();
+</script>
+
+</body>
+</html>
